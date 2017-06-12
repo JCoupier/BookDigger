@@ -38,9 +38,14 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
     /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
 
+    /** TextView displaying pagination info */
     private TextView mResultsTextView;
 
+    /** The startIndex for the query url */
     private int startIndex = 0;
+
+    /** Number of items displayed in the list (default = 10) */
+    private int itemsNumber = 10;
 
     /** Constant value for the book loader ID. */
     private static final int BOOK_LOADER_ID = 1;
@@ -117,6 +122,9 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
                         View loadingIndicator = findViewById(R.id.loading_indicator);
                         loadingIndicator.setVisibility(View.GONE);
 
+                        // Clear the adapter of previous book data
+                        mAdapter.clear();
+
                         // Update empty state with no connection error message
                         mEmptyStateTextView.setText(R.string.no_internet_connection);
                     }
@@ -133,7 +141,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
                 } else {
 
                     // Remove 10 to the startIndex
-                    startIndex -= 10;
+                    startIndex -= itemsNumber;
 
                     // Get a reference to the ConnectivityManager to check state of network connectivity
                     ConnectivityManager connectivityManager = (ConnectivityManager)
@@ -151,6 +159,9 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
                         // First, hide loading indicator so error message will be visible
                         View loadingIndicator = findViewById(R.id.loading_indicator);
                         loadingIndicator.setVisibility(View.GONE);
+
+                        // Clear the adapter of previous book data
+                        mAdapter.clear();
 
                         // Update empty state with no connection error message
                         mEmptyStateTextView.setText(R.string.no_internet_connection);
@@ -163,8 +174,12 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(View view) {
 
+                if (startIndex + itemsNumber >= BooksUtils.totalItems){
+                    Toast.makeText(BooksActivity.this, "No next page", Toast.LENGTH_SHORT).show();
+                } else {
+
                     // Add 10 to the startIndex
-                    startIndex += 10;
+                    startIndex += itemsNumber;
 
                     // Get a reference to the ConnectivityManager to check state of network connectivity
                     ConnectivityManager connectivityManager = (ConnectivityManager)
@@ -183,9 +198,13 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
                         View loadingIndicator = findViewById(R.id.loading_indicator);
                         loadingIndicator.setVisibility(View.GONE);
 
+                        // Clear the adapter of previous book data
+                        mAdapter.clear();
+
                         // Update empty state with no connection error message
                         mEmptyStateTextView.setText(R.string.no_internet_connection);
                     }
+                }
             }
         });
     }
@@ -215,7 +234,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
             mAdapter.addAll(books);
 
             // Update the Results TextView in the UI with the index of the books displayed
-            mResultsTextView.setText("Results " + startIndex + " to " + (startIndex + 10));
+            mResultsTextView.setText("Results " + startIndex + " to " + (startIndex + itemsNumber) + " out of approximately " + BooksUtils.totalItems + " Books");
         }
     }
 
