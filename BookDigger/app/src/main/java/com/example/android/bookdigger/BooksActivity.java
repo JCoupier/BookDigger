@@ -94,6 +94,9 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
                     // Hide the keyboard when the searchButton is clicked on
                     hideKeyboard(BooksActivity.this);
 
+                    // Reset the startIndex
+                    startIndex = 0;
+                    
                     // Get the Input text that the user typed
                     searchInput = searchField.getText().toString().trim();
 
