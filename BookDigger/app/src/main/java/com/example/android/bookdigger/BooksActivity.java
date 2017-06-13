@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * BookDigger created by JCoupier on 07/06/2017.
@@ -50,7 +49,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
     /** Constant value for the book loader ID. */
     private static final int BOOK_LOADER_ID = 1;
 
-    BooksModel booksModel;
+    private BooksModel booksModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
