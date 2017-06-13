@@ -36,9 +36,6 @@ public class BooksUtils {
     private static final String KEY_IMAGE_LINKS = "imageLinks";
     private static final String KEY_SMALL_THUMBNAIL = "smallThumbnail";
 
-    // totalItems value get from the API response
-    public static int totalItems = 0;
-
     /**
      * Create a private constructor because no one should ever create a {@link BooksUtils} object.
      * This class is only meant to hold static variables and methods, which can be accessed
@@ -51,7 +48,7 @@ public class BooksUtils {
      * Return a list of {@link Book} objects that has been built up from
      * parsing the given JSON response.
      */
-    private static List<Book> extractFeatureFromJson(String bookJSON) {
+    private static BooksModel extractFeatureFromJson(String bookJSON) {
         // If the JSON string is empty or null, then return early.
         if (TextUtils.isEmpty(bookJSON)) {
             return null;
@@ -59,6 +56,7 @@ public class BooksUtils {
 
         // Create an empty ArrayList that we can start adding books to
         List<Book> books = new ArrayList<>();
+        int totalItems = 0;
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
@@ -137,7 +135,7 @@ public class BooksUtils {
         }
 
         // Return the list of books
-        return books;
+        return new BooksModel(books, totalItems);
     }
 
     /**
@@ -221,7 +219,7 @@ public class BooksUtils {
     /**
      * Query the Google API dataset and return a list of {@link Book} objects.
      */
-    public static List<Book> fetchBookData(String requestUrl) {
+    public static BooksModel fetchBookData(String requestUrl) {
         // Create URL object
         URL url = createUrl(requestUrl);
 
@@ -233,10 +231,7 @@ public class BooksUtils {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
 
-        // Extract relevant fields from the JSON response and create a list of {@link Book}s
-        List<Book> books = extractFeatureFromJson(jsonResponse);
-
         // Return the list of {@link Book}s
-        return books;
+        return extractFeatureFromJson(jsonResponse);
     }
 }

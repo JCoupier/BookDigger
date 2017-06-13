@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * BookDigger created by JCoupier on 07/06/2017.
  */
-public class BooksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
+public class BooksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<BooksModel> {
 
     /** URL for book data from the Google API dataset */
     private static final String GOOGLEAPI_REQUEST_URL =
@@ -49,6 +49,8 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
 
     /** Constant value for the book loader ID. */
     private static final int BOOK_LOADER_ID = 1;
+
+    BooksModel booksModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +176,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(View view) {
 
-                if (startIndex + itemsNumber >= BooksUtils.totalItems){
+                if (startIndex + itemsNumber >= booksModel.getTotalItems()){
                     Toast.makeText(BooksActivity.this, "No next page", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -210,13 +212,15 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     @Override
-    public Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<BooksModel> onCreateLoader(int i, Bundle bundle) {
         // Create a new loader for the given URL
         return new BooksLoader(this, GOOGLEAPI_REQUEST_URL, searchInput, startIndex);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
+    public void onLoadFinished(Loader<BooksModel> loader, BooksModel booksModel) {
+
+        this.booksModel = booksModel;
 
         // Hide loading indicator because the data has been loaded
         View loadingIndicator = findViewById(R.id.loading_indicator);
@@ -230,16 +234,16 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
 
         // If there is a valid list of {@link Book}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
-        if (books != null && !books.isEmpty()) {
-            mAdapter.addAll(books);
+        if (booksModel != null && booksModel.getBooks() != null && !booksModel.getBooks().isEmpty()) {
+            mAdapter.addAll(booksModel.getBooks());
 
             // Update the Results TextView in the UI with the index of the books displayed
-            mResultsTextView.setText("Results " + startIndex + " to " + (startIndex + itemsNumber) + " out of approximately " + BooksUtils.totalItems + " Books");
+            mResultsTextView.setText("Results " + startIndex + " to " + (startIndex + itemsNumber) + " out of approximately " + booksModel.getTotalItems() + " Books");
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Book>> loader) {
+    public void onLoaderReset(Loader<BooksModel> loader) {
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }
