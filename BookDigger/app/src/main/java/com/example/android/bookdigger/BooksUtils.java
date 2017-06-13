@@ -56,6 +56,8 @@ public class BooksUtils {
 
         // Create an empty ArrayList that we can start adding books to
         List<Book> books = new ArrayList<>();
+
+        // Create the totalItems variable
         int totalItems = 0;
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON
@@ -66,7 +68,7 @@ public class BooksUtils {
             JSONObject baseJsonResponse = new JSONObject(bookJSON);
 
             // Extract the value for the key called "totalItems"
-            totalItems = baseJsonResponse.getInt(KEY_TOTAL_ITEMS);
+             totalItems = baseJsonResponse.getInt(KEY_TOTAL_ITEMS);
 
             // Return a null esponse if there is no item
             if (totalItems == 0) {
@@ -134,8 +136,8 @@ public class BooksUtils {
             Log.e("BooksUtils", "Problem parsing the book JSON results", e);
         }
 
-        // Return the list of books
-        return new BooksModel(books, totalItems);
+        // Return the list of booksModel
+        return new BooksModel(totalItems, books);
     }
 
     /**
