@@ -10,7 +10,7 @@ import java.util.List;
  * Loads a list of books by using an AsyncTask to perform the
  * network request to the given URL.
  */
-public class BooksLoader extends AsyncTaskLoader<List<Book>> {
+public class BooksLoader extends AsyncTaskLoader<BooksModel> {
 
     /** Tag for log messages */
     private static final String LOG_TAG = BooksLoader.class.getName();
@@ -48,7 +48,7 @@ public class BooksLoader extends AsyncTaskLoader<List<Book>> {
      * This is on a background thread.
      */
     @Override
-    public List<Book> loadInBackground() {
+    public BooksModel loadInBackground() {
         if (mUrl == null || mSearchInput == null) {
             return null;
         }
